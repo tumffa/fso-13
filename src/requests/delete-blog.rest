@@ -1,2 +1,25 @@
-# Replace :id with the actual blog id you want to delete
-DELETE http://localhost:3001/api/blogs/1
+
+### Login and get token
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+	"username": "testuser3@example.com",
+	"password": "password"
+}
+
+### Add a blog as the logged-in user
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+	"title": "Blog to Delete",
+	"author": "Test User",
+	"url": "https://example.com/delete-blog",
+	"likes": 0
+}
+
+### Delete the blog (uses id from previous response)
+DELETE http://localhost:3001/api/blogs/{{add_a_blog_as_the_logged_in_user.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
