@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const blog = require('../../models/blog')
-const sequelize = require('../../util/db')
+const blog = require('../models/blog')
+const sequelize = require('../util/db')
 blog.initModel(sequelize)
 
 router.get('/', async (req, res) => {
@@ -13,6 +13,24 @@ router.post('/', async (req, res) => {
   try {
     const blog = await blog.create(req.body)
     res.status(201).json(blog)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+})
+
+router.put('/:id', async (req, res) => {
+  const id = req.params.id
+  const { likes } = req.body
+  try {
+    const [updatedRows] = await blog.update(
+      { likes },
+      { where: { id } }
+    )
+    if (updatedRows === 0) {
+      return res.status(404).json({ error: 'Blog not found' })
+    }
+    const updatedBlog = await blog.findByPk(id)
+    res.json(updatedBlog)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
