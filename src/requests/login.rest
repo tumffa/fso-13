@@ -10,11 +10,12 @@ Content-Type: application/json
 ### Post a blog as the logged-in user
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyM0BleGFtcGxlLmNvbSIsImlkIjo0LCJpYXQiOjE3NTY1NDQ0MjZ9.0fvd9K1OvaTHa3oxhRg6MXYn2Y7KkXcX9hZ_UDyYj4Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyM0BleGFtcGxlLmNvbSIsImlkIjoxLCJpYXQiOjE3NTY1NTE4NDV9.7Z6nnWn-JXiX3BLloon0mAoUeACLZk_XZ_4ALA8P8Ug
 
 {
   "title": "Tokenized Blog",
   "author": "Test User",
   "url": "https://example.com/token-blog",
-  "likes": 1
+  "likes": 1,
+  "year": 2023
 }

@@ -32,6 +32,23 @@ class Blog extends Model {
       likes: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+      },
+      year: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: {
+            args: [1991],
+            msg: 'Year must be 1991 or later'
+          },
+          max: {
+            args: [new Date().getFullYear()],
+            msg: `Year cannot be greater than the current year (${new Date().getFullYear()})`
+          },
+          isInt: {
+            msg: 'Year must be an integer'
+          }
+        }
       }
     }, {
       sequelize,

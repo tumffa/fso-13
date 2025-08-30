@@ -3,7 +3,7 @@ const { fn, col } = require('sequelize')
 const express = require('express')
 const router = express.Router()
 const { Blog, User } = require('../models')
-
+const tokenExtractor = require('../middleware/tokenExtractor')
 
 const { Op } = require('sequelize')
 
@@ -32,30 +32,9 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-const jwt = require('jsonwebtoken')
-const { SECRET } = require('../util/config')
-
-router.post('/', async (req, res, next) => {
+router.post('/', tokenExtractor, async (req, res, next) => {
   try {
-    const authorization = req.get('authorization')
-    if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
-    const token = authorization.substring(7)
-    let decodedToken
-    try {
-      decodedToken = jwt.verify(token, SECRET)
-    } catch (err) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
-    const user = await User.findByPk(decodedToken.id)
-    if (!user) {
-      return res.status(401).json({ error: 'user not found' })
-    }
-    const newBlog = await Blog.create({ ...req.body, userId: user.id })
+    const newBlog = await Blog.create({ ...req.body, userId: req.user.id })
     res.status(201).json(newBlog)
   } catch (error) {
     next(error)
@@ -85,27 +64,13 @@ router.put('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', tokenExtractor, async (req, res, next) => {
   try {
-    const authorization = req.get('authorization')
-    if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
-    const token = authorization.substring(7)
-    let decodedToken
-    try {
-      decodedToken = jwt.verify(token, SECRET)
-    } catch (err) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: 'token missing or invalid' })
-    }
     const blog = await Blog.findByPk(req.params.id)
     if (!blog) {
       return res.status(404).json({ error: 'Blog not found' })
     }
-    if (blog.userId !== decodedToken.id) {
+    if (blog.userId !== req.user.id) {
       return res.status(403).json({ error: 'Only the creator can delete this blog' })
     }
     await blog.destroy()
