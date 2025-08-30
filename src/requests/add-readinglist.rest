@@ -1,0 +1,11 @@
+### Add a blog to a user's reading list
+POST http://localhost:3001/api/readinglists
+Content-Type: application/json
+
+{
+  "blog_id": 1,
+  "user_id": 1
+}
+
+### Get user by id (with readings)
+GET http://localhost:3001/api/users/1
