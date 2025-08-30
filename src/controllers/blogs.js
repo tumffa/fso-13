@@ -3,9 +3,18 @@ const router = express.Router()
 const { Blog, User } = require('../models')
 
 
-router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll()
-  res.json(blogs)
+router.get('/', async (req, res, next) => {
+  try {
+    const blogs = await Blog.findAll({
+      include: {
+        model: User,
+        attributes: ['id', 'username', 'name', 'createdAt', 'updatedAt']
+      }
+    })
+    res.json(blogs)
+  } catch (error) {
+    next(error)
+  }
 })
 
 const jwt = require('jsonwebtoken')
