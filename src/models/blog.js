@@ -8,14 +8,26 @@ class Blog extends Model {
         primaryKey: true,
         autoIncrement: true
       },
-      author: DataTypes.STRING,
+      author: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: 'Author cannot be empty' }
+        }
+      },
       url: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: 'URL cannot be empty' }
+        }
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: 'Title cannot be empty' }
+        }
       },
       likes: {
         type: DataTypes.INTEGER,

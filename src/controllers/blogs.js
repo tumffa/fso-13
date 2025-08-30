@@ -9,19 +9,24 @@ router.get('/', async (req, res) => {
   res.json(blogs)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
-    const blog = await blog.create(req.body)
-    res.status(201).json(blog)
+    const newBlog = await blog.create(req.body)
+    res.status(201).json(newBlog)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    next(error)
   }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res, next) => {
   const id = req.params.id
   const { likes } = req.body
   try {
+    if (typeof likes !== 'number' || isNaN(likes)) {
+      const err = new Error('Likes value is required and must be a number')
+      err.name = 'LikesValidationError'
+      throw err
+    }
     const [updatedRows] = await blog.update(
       { likes },
       { where: { id } }
@@ -32,7 +37,7 @@ router.put('/:id', async (req, res) => {
     const updatedBlog = await blog.findByPk(id)
     res.json(updatedBlog)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    next(error)
   }
 })
 

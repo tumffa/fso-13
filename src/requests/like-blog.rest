@@ -1,0 +1,7 @@
+# Replace :id with the actual blog id you want to like
+PUT http://localhost:3001/api/blogs/6
+Content-Type: application/json
+
+{
+  "likes": 
+}
