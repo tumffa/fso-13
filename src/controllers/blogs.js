@@ -1,17 +1,16 @@
 const express = require('express')
 const router = express.Router()
-const blog = require('../models/blog')
-const sequelize = require('../util/db')
-blog.initModel(sequelize)
+const { Blog, User } = require('../models')
+
 
 router.get('/', async (req, res) => {
-  const blogs = await blog.findAll()
+  const blogs = await Blog.findAll()
   res.json(blogs)
 })
 
 router.post('/', async (req, res, next) => {
   try {
-    const newBlog = await blog.create(req.body)
+    const newBlog = await Blog.create(req.body)
     res.status(201).json(newBlog)
   } catch (error) {
     next(error)
@@ -27,14 +26,14 @@ router.put('/:id', async (req, res, next) => {
       err.name = 'LikesValidationError'
       throw err
     }
-    const [updatedRows] = await blog.update(
+    const [updatedRows] = await Blog.update(
       { likes },
       { where: { id } }
     )
     if (updatedRows === 0) {
       return res.status(404).json({ error: 'Blog not found' })
     }
-    const updatedBlog = await blog.findByPk(id)
+    const updatedBlog = await Blog.findByPk(id)
     res.json(updatedBlog)
   } catch (error) {
     next(error)
@@ -43,7 +42,7 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res) => {
   const id = req.params.id
-  const deleted = await blog.destroy({ where: { id } })
+  const deleted = await Blog.destroy({ where: { id } })
   if (deleted) {
     res.status(204).end()
   } else {

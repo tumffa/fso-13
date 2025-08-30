@@ -1,0 +1,7 @@
+# Replace testuser with the actual username you want to update
+PUT http://localhost:3001/api/users/testuser
+Content-Type: application/json
+
+{
+  "name": "Updated Name"
+}
