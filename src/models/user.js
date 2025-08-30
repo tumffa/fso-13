@@ -13,7 +13,8 @@ class User extends Model {
         unique: true,
         allowNull: false,
         validate: {
-          notEmpty: { msg: 'Username cannot be empty' }
+          notEmpty: { msg: 'Username cannot be empty' },
+          isEmail: { msg: 'Username must be a valid email address' }
         }
       },
       name: {
