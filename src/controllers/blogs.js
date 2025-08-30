@@ -8,9 +8,30 @@ router.get('/', async (req, res) => {
   res.json(blogs)
 })
 
+const jwt = require('jsonwebtoken')
+const { SECRET } = require('../util/config')
+
 router.post('/', async (req, res, next) => {
   try {
-    const newBlog = await Blog.create(req.body)
+    const authorization = req.get('authorization')
+    if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+    const token = authorization.substring(7)
+    let decodedToken
+    try {
+      decodedToken = jwt.verify(token, SECRET)
+    } catch (err) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: 'token missing or invalid' })
+    }
+    const user = await User.findByPk(decodedToken.id)
+    if (!user) {
+      return res.status(401).json({ error: 'user not found' })
+    }
+    const newBlog = await Blog.create({ ...req.body, userId: user.id })
     res.status(201).json(newBlog)
   } catch (error) {
     next(error)
