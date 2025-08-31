@@ -1,7 +1,7 @@
 ### Mark a reading list entry as read
-PUT http://localhost:3001/api/readinglists/1
+PUT http://localhost:3001/api/readinglists/2
 Content-Type: application/json
-Authorization: Bearer YOUR_JWT_TOKEN
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyM0BleGFtcGxlLmNvbSIsImlkIjoxLCJpYXQiOjE3NTY1NTMzNDV9.Rznuaod_CjIFXyBd8n0v87RYr6EhhowrVPWmQz1HRds
 
 {
   "read": true
